@@ -1,8 +1,11 @@
+import FormLogin from "../components/FormLogin"
 
 
 function page() {
   return (
-    <div>Login</div>
+    <>
+      <FormLogin />
+    </>
   )
 }
 
