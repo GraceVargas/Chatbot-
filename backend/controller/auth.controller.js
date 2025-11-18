@@ -1,4 +1,5 @@
 import Login from '../models/auth.model.js';
+import { generateToken } from '../utils/jwt.js';
 
 
 export const login = async (req, res) => {
@@ -12,7 +13,19 @@ export const login = async (req, res) => {
     const login = new Login(email, password);
     const response = await login.authenticate();
     if (response.success) {
-        return res.status(200).json({ message: response.message, user: response.user });
+        const token = generateToken(response.user);
+        return res
+            .cookie("token", token, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === "production",
+                sameSite: "strict",
+                maxAge: 3600000 
+            })
+            .status(200)
+            .json({
+                message: response.message,
+                user: response.user,
+            });
     } else {
         return res.status(401).json({ message: response.message, error: response.error });
     }
@@ -23,3 +36,8 @@ export const login = async (req, res) => {
     return res.status(500).json({ message: "Error interno al loguearse" });
   }
 };
+
+export const logout = async(req, res) => {
+    res.clearCookie("token");
+    res.json({ message: "Sesión cerrada" });
+}
