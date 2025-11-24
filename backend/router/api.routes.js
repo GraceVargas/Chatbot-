@@ -1,8 +1,8 @@
 import express from 'express';
-import { test } from '../controller/api.controller.js';
+import { askChat } from '../controller/api.controller.js';
 
 const router = express.Router();
 
-router.get("/", test);
+router.post("/chat", askChat);
 
 export default router;
