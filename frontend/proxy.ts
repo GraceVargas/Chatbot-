@@ -3,7 +3,7 @@
 const protectedRoutes = ["/"];
 const publicRoutes = ["/login", "/register"];
 
-export async function middleware(req: NextRequest) {
+export async function proxy(req: NextRequest) {
   const url = req.nextUrl.clone();
   const pathname = url.pathname;
   const isProtected = protectedRoutes.includes(pathname);
