@@ -8,7 +8,7 @@ const ChatMessage = ({
   const fromChatbot = from === "chatbot";
   return (
     <div className={`flex items-end ${! fromChatbot ? "flex-row-reverse" : ""}`}>
-      <div className="rounded bg-primary-500 w-8 aspect-square p-1.5">
+      <div className="rounded bg-primary-500 w-8 aspect-square p-1.5 shrink-0">
         {fromChatbot ? (
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
             <g

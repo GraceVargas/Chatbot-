@@ -1,22 +1,54 @@
 "use client";
 
-import { useActionState, useEffect, useState } from "react";
+import { FormEvent, useRef } from "react";
 import ChatMessage from "./ChatMessage";
-import { askQuestion } from "../actions/askQuestion";
+import useSendMessage from "../hooks/useSendMessage";
+
 
 function Chatbot() {
-  const [state, formAction, pending] = useActionState(askQuestion, null);
-  const [ counter, setCounter ] = useState(0);
+
+  const { messages, sendMessage, setMessages } = useSendMessage();
+  const textArea = useRef<HTMLTextAreaElement>(null);
+
+  const sendUserMsg = () => {
+    const message = textArea.current?.value.trim();
+    if (!message) return; 
+
+    setMessages((prev) => [
+      ...prev,
+      { id: prev.length, from: "user", text: message },
+      { id: prev.length + 1, from: "chatbot", text: "" },
+    ]);
+    sendMessage(message);
+    
+    if (textArea.current) {
+      textArea.current.value = "";
+    }
+  }
+  
+  
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    sendUserMsg();
+    
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      sendUserMsg();
+    }
+  };
 
   return (
     <>
       <div className="flex items-center justify-center w-full">
-        <div className="m-2 w-full md:w-1/2 lg:3/4 border flex flex-col rounded-xl">
-          <header className="w-full bg-primary-500 flex  justify-between px-2 py-1 rounded-t-lg items-center">
-            <h2 className="text-sm font-semibold text-white flex items-center">
+        <div className="m-2 w-full md:w-3/4 border flex flex-col rounded-xl">
+          <header className="w-full bg-primary-500 flex justify-center px-2 py-3 items-center">
+            <h2 className="text-lg font-semibold text-white flex items-center">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="mr-2 w-6"
+                className="mr-2 w-8"
                 viewBox="0 0 24 24"
               >
                 <g
@@ -34,27 +66,28 @@ function Chatbot() {
                   <path d="M9.5 15c.57.607 1.478 1 2.5 1s1.93-.393 2.5-1m-5.491-4H9m6.009 0H15" />
                 </g>
               </svg>
-              Chatbot
+              TravelBot
             </h2>
           </header>
 
-          <div className=" h-[70vh] flex flex-col gap-4 p-2 select-none">
-            <ChatMessage from="chatbot" text="Hola, como estas?" key={counter} />
-            <ChatMessage from="user" text="Hola, necesito ayuda para esto?" key={counter+1} />
-            {state?.success && <ChatMessage from="user" text={state.success} key={counter+2} />}
+          <div className=" h-[70vh] flex flex-col gap-4 p-2 select-none overflow-y-auto">
+            {messages.map((msg) => (
+              <ChatMessage key={msg.id} from={msg.from} text={msg.text} />
+            ))}
           </div>
 
-          <form action={formAction} className="flex items-center my-2 mx-1">
+          <form onSubmit={handleSubmit} className="flex items-center my-2 mx-1">
             <textarea
+              ref={textArea}
               id="question"
               name="question"
               className="block mx-4 p-2.5 w-full text-sm text-gray-900 bg-white rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               placeholder="Escribe tu pregunta..."
+              onKeyDown={handleKeyDown}
             ></textarea>
             <button
               type="submit"
               className="flex justify-center items-center aspect-square h-9 bg-primary-500 inlineFlex justifyCenter p-2 text-white rounded-full cursor-pointer hover:bg-primary-700"
-              disabled={pending}
             >
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                 <path
@@ -63,8 +96,7 @@ function Chatbot() {
                 />
               </svg>
             </button>
-            </form>
-            <p className="my-2 mx-3 text-red-600 text-sm">{state?.errors}</p>
+          </form>
         </div>
       </div>
     </>

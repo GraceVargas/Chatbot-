@@ -3,8 +3,7 @@
 import { redirect } from "next/navigation";
 import { setTokenInCookies } from "../actions/setTokenInCookies";
 import { cookies } from "next/headers";
-
-const API_URL = process.env.API_URL;
+import { API_URL } from "../../constants";
 
 export const authenticate = async (
   email: FormDataEntryValue,

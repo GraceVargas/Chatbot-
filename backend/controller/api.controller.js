@@ -9,7 +9,7 @@ export const askChat = (req, res) => {
   const OPENROUTER_API_KEY = process.env.KEY_OPENROUTER;
 
   
-  // Agregar nuevo mensaje del usuario a la conversación
+//   Agregar nuevo mensaje del usuario a la conversación
   conversation.push({ role: "user", content: message });
 
   // Limitar la memoria a los últimos 10 mensajes
@@ -54,6 +54,7 @@ export const askChat = (req, res) => {
           if (data === "[DONE]") {
             // Guardar la respuesta del asistente en la memoria
             conversation.push({ role: "assistant", content: assistantReply });
+            res.write(`data: [DONE]\n\n`);
             res.end();
             return;
           }
@@ -63,7 +64,7 @@ export const askChat = (req, res) => {
             const content = parsed.choices?.[0]?.delta?.content;
             if (content) {
               assistantReply += content;
-              res.write(content);
+              res.write(`data: ${JSON.stringify({ content })}\n\n`);
             }
           } catch (err) {
             // ignorar líneas no parseables
@@ -79,6 +80,7 @@ export const askChat = (req, res) => {
       res.status(500).end("Error: " + err.message);
     });
 
+    
     request.write(body);
     request.end();
   } catch (err) {

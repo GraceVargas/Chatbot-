@@ -11,7 +11,6 @@ export async function setTokenInCookies(rawSetCookie: string | null) {
   };
 
   const splitCookies = rawSetCookie.split(",").filter(Boolean);
-  console.log(splitCookies)
 
   const cookieStore = await cookies();
   for (const cookieStr of splitCookies) {

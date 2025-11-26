@@ -1,9 +1,10 @@
 'use server'
+
+import { API_URL } from "../../constants";
+
  
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function registerUser(initialState: any, formData: FormData) {
-
-    const API_URL = process.env.API_URL;
 
     const email = formData.get('email');
     const password = formData.get('password');

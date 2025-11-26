@@ -6,7 +6,7 @@ export default async function Home() {
     <>
       <button
         onClick={logout}
-        className="absolute z-10 bg-gray-600 rounded-full w-38 h-12 text-white font-semibold right-4 bottom-6 cursor-pointer hover:bg-gray-500"
+        className="absolute z-10 bg-gray-600 rounded-full w-28 h-9 text-sm text-white font-semibold right-4 bottom-6 cursor-pointer hover:bg-gray-500"
       >
         Cerrar sesión
       </button>
